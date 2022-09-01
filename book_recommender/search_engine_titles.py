@@ -24,5 +24,5 @@ def search(query,vectorizer):
 
     return results.head(5).style.format({'url': make_clickable, 'cover_image': show_image})
 
-"""Example of a query: search("harry potter and the prisoner of azkaban", vectorizer)"""
+"""Example of a query: search("harry potter and the prisoner of azkaban", vectorizer lalalalalalal)"""
 """"""
