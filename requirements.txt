@@ -21,6 +21,10 @@ gcsfs
 google-cloud-storage
 mlflow
 s3fs
+fastapi
+pytz
+uvicorn
+pytest-asyncio
 
 # utilities
 six>=1.14
