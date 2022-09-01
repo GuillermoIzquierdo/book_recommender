@@ -42,9 +42,6 @@ def cleaning(sentence):
     return cleaned_sentence
 
 
-
-
-
 def preprocessing_book_title(df):
     df=df.dropna()
     df["mod_title"] = df["title"].str.replace("[^a-zA-Z0-9 ]", "", regex=True)
@@ -61,3 +58,16 @@ def preprocessing_book_desc(df):
         df["mod_desc"]  = df["mod_desc"].str.replace("[^a-zA-Z0-9 ]", "", regex=True)
         df["mod_desc"]=df["description"].apply(cleaning)
         return df
+
+def clean_genres(df):
+    '''Removes characters – []'
+    Expects a df with a column called "genres".
+    Returns the df with a new column named "clean_genres"
+    '''
+    if 'clean_genres' in df.columns:
+        df['clean_genres'] = df['genres'].apply(
+            lambda x: x.replace('[', '').replace(']', '').replace("'", '')
+        )
+        return df
+    else:
+        return '"clean_genres" not found in columns'

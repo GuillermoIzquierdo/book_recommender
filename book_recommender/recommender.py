@@ -10,6 +10,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Language processing
+
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 def genre_recomendation(df, book_title, n_features = 25, n_books=5):
     '''
     Recommends books based on a book_title.
@@ -35,3 +40,16 @@ def genre_recomendation(df, book_title, n_features = 25, n_books=5):
         return r[1:]
     else:
         return ''
+
+def desc_recommendator(query, df, min_df = 0.2, n_indices = -10):
+    '''_'''
+    preprocessed = re.sub('[^a-zA-Z0-9]', '', query.lower())
+    vectorizer = TfidfVectorizer(min_df = min_df)
+    vectorized_text = vectorizer.fit_transform(df['mod_desc'])
+    query_vec = vectorizer.transform([preprocessed])
+    similarity = cosine_similarity(query_vec, vectorized_text).flatten()
+    indices = np.argpartition(similarity, n_indices)[n_indices:]
+    results = df.iloc[indices]
+    return results
+
+
