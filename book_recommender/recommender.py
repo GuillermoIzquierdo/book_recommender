@@ -52,4 +52,3 @@ def desc_recommendator(query, df, min_df = 0.2, n_indices = -10):
     results = df.iloc[indices]
     return results
 
-
