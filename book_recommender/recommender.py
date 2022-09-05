@@ -15,6 +15,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+# Google Cloud
+
+from google.cloud import bigquery
+
 def genre_recomendation(df, book_title, n_features = 25, n_books=5):
     '''
     Recommends books based on a book_title.
@@ -52,3 +56,16 @@ def desc_recommendator(query, df, min_df = 0.2, n_indices = -10):
     results = df.iloc[indices]
     return results
 
+
+def find_users(liked_books, table):
+
+    client = bigquery.Client()
+
+    query = f'''
+    SELECT user_id FROM `lewagon-bootcamp-356013.book_recommender.interactions`
+    WHERE book_id IN {tuple(liked_books)}
+    '''
+
+    df = client.query(query).to_dataframe()
+
+    return df
