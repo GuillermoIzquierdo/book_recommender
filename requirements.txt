@@ -25,6 +25,8 @@ fastapi
 pytz
 uvicorn
 pytest-asyncio
+pyarrow
+fastparquet
 
 # utilities
 six>=1.14

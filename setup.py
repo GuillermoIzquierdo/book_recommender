@@ -11,7 +11,7 @@ setup(name='book_recommender',
       packages=find_packages(),
       install_requires=requirements,
       test_suite='tests',
-      # include_package_data: to install data from MANIFEST.in
+      #include_package_data: to install data from MANIFEST.in
       include_package_data=True,
-      scripts=['scripts/book_recommender-run'],
+      #scripts=['scripts/book_recommender-run'],
       zip_safe=False)
