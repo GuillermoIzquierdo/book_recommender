@@ -50,8 +50,6 @@ def preprocessing_book_title(df):
     df = df[df["mod_title"].str.len() > 0]
     return df
 
-
-
 def preprocessing_book_desc(df):
         df=df.dropna()
         df["mod_desc"] = df["description"].str.lower()

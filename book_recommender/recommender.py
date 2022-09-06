@@ -15,8 +15,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# google-cloud
-
 from google.cloud import bigquery
 
 def genre_recomendation(df, book_title, n_features = 25, n_books=5):
@@ -66,5 +64,4 @@ def find_users(liked_books : list):
     '''
 
     df = client.query(query).to_dataframe()
-
     return df
