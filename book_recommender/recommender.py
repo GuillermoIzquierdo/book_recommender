@@ -59,9 +59,21 @@ def find_users(liked_books : list):
     client = bigquery.Client()
 
     query = f'''
-    SELECT user_id FROM `lewagon-bootcamp-356013.book_recommender.interactions`
+    SELECT DISTINCT(user_id) FROM `lewagon-bootcamp-356013.book_recommender.interactions`
     WHERE book_id IN {tuple(liked_books)}
     '''
 
-    df = client.query(query).to_dataframe()
-    return df
+    overlap_users = client.query(query).to_dataframe()['user_id'].tolist()
+    return overlap_users
+
+def books_users(overlap_users):
+    client = bigquery.Client()
+    query=f'''
+    SELECT user_id, book_id, rating FROM `lewagon-bootcamp-356013.book_recommender.interactions`
+    WHERE user_id IN {tuple(overlap_users)}
+    '''
+    book_recs = client.query(query).to_dataframe()
+    return book_recs
+
+def final_recommendation(book_recs):
+    pass
