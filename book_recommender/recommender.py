@@ -73,19 +73,19 @@ def books_users(overlap_users):
     book_recs = client.query(query).to_dataframe()
     return book_recs
 
-def get_recs(book_recs, liked_books):
+def get_recs(book_recs, liked_books, books_titles):
     '''books_titles needs to be in the environment already assigned'''
     all_recs = book_recs['book_id'].value_counts().to_frame().reset_index()
     all_recs.columns = ["book_id", "book_count"]
-    books_titles = pd.read_json("books_titles.json")
+    #books_titles = pd.read_json("books_titles.json")
     all_recs_titles = all_recs.merge(books_titles, how="inner", on="book_id")
     all_recs_titles["score"] = all_recs_titles["book_count"] * (all_recs_titles["book_count"] / all_recs_titles["ratings"])
     popular_recs = all_recs_titles[all_recs_titles["book_count"] > 200].sort_values("score", ascending=False)
     final_recs = popular_recs[~popular_recs["book_id"].isin(liked_books)].head(10)
     return final_recs
 
-def recommender(liked_books: list):
+def recommender(liked_books: list, books_titles: pd.DataFrame):
     overlap_users=find_users(liked_books)
     book_recs=books_users(overlap_users)
-    recs=get_recs(book_recs, liked_books)
+    recs=get_recs(book_recs, liked_books, books_titles)
     return recs

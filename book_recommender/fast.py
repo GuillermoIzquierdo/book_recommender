@@ -43,10 +43,10 @@ def predict(keywords: str):
             'book 5': {'title': str(results['title'][4]), 'image': str(results['cover_img'][4]), 'book_id': str(results['book_id'][4]), 'url': str(results['url'][4]), 'description': str(results['description'][4])}}
 
 
-@app.post("/recommendation")
+@app.get("/recommendation")
 def recommendation(book_ids: str):
     lst_books = book_ids.split(',')
-    recommendations = recommender(lst_books).to_json()
+    recommendations = recommender([int(x) for x in lst_books], app.state.data).head().to_json()
     return recommendations
 
 
