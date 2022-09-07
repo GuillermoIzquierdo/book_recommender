@@ -43,6 +43,14 @@ def genre_recomendation(df, book_title, n_features = 25, n_books=5):
     else:
         return ''
 
+def get_titles():
+    client = bigquery.Client()
+    query='''
+    SELECT * FROM `lewagon-bootcamp-356013.book_recommender.books_info`
+    '''
+    data = client.query(query).to_dataframe()
+    return data
+
 def desc_recommendator(query, df, min_df = 0.2, n_indices = -10):
     '''_'''
     preprocessed = re.sub('[^a-zA-Z0-9]', '', query.lower())
@@ -77,7 +85,6 @@ def get_recs(book_recs, liked_books, books_titles):
     '''books_titles needs to be in the environment already assigned'''
     all_recs = book_recs['book_id'].value_counts().to_frame().reset_index()
     all_recs.columns = ["book_id", "book_count"]
-    #books_titles = pd.read_json("books_titles.json")
     all_recs_titles = all_recs.merge(books_titles, how="inner", on="book_id")
     all_recs_titles["score"] = all_recs_titles["book_count"] * (all_recs_titles["book_count"] / all_recs_titles["ratings"])
     popular_recs = all_recs_titles[all_recs_titles["book_count"] > 200].sort_values("score", ascending=False)
