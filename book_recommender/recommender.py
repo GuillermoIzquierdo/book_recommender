@@ -84,7 +84,7 @@ def get_recs(book_recs, liked_books):
     final_recs = popular_recs[~popular_recs["book_id"].isin(liked_books)].head(10)
     return final_recs
 
-def recommender(liked_books):
+def recommender(liked_books: list):
     overlap_users=find_users(liked_books)
     book_recs=books_users(overlap_users)
     recs=get_recs(book_recs, liked_books)
