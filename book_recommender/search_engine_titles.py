@@ -26,3 +26,7 @@ def search(query,df):
 
 """Example of a query: search("harry potter and the prisoner of azkaban", vectorizer lalalalalalal)"""
 """"""
+def title_to_book_id(book_title : str, df):
+
+    book_id = df[df['book_title'].isin(book_title)]['book_id']
+    return book_id

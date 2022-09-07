@@ -55,25 +55,37 @@ def desc_recommendator(query, df, min_df = 0.2, n_indices = -10):
     return results
 
 def find_users(liked_books : list):
-
     client = bigquery.Client()
-
     query = f'''
-    SELECT DISTINCT(user_id) FROM `lewagon-bootcamp-356013.book_recommender.interactions`
+    SELECT DISTINCT(user_id) FROM `lewagon-bootcamp-356013.book_recommender.interactions2`
     WHERE book_id IN {tuple(liked_books)}
+    AND rating >= 4
     '''
-
     overlap_users = client.query(query).to_dataframe()['user_id'].tolist()
     return overlap_users
 
 def books_users(overlap_users):
     client = bigquery.Client()
     query=f'''
-    SELECT user_id, book_id, rating FROM `lewagon-bootcamp-356013.book_recommender.interactions`
+    SELECT user_id, book_id, rating FROM `lewagon-bootcamp-356013.book_recommender.interactions2`
     WHERE user_id IN {tuple(overlap_users)}
     '''
     book_recs = client.query(query).to_dataframe()
     return book_recs
 
-def final_recommendation(book_recs):
-    pass
+def get_recs(book_recs, liked_books):
+    '''books_titles needs to be in the environment already assigned'''
+    all_recs = book_recs['book_id'].value_counts().to_frame().reset_index()
+    all_recs.columns = ["book_id", "book_count"]
+    books_titles = pd.read_json("books_titles.json")
+    all_recs_titles = all_recs.merge(books_titles, how="inner", on="book_id")
+    all_recs_titles["score"] = all_recs_titles["book_count"] * (all_recs_titles["book_count"] / all_recs_titles["ratings"])
+    popular_recs = all_recs_titles[all_recs_titles["book_count"] > 200].sort_values("score", ascending=False)
+    final_recs = popular_recs[~popular_recs["book_id"].isin(liked_books)].head(10)
+    return final_recs
+
+def recommender(liked_books):
+    overlap_users=find_users(liked_books)
+    book_recs=books_users(overlap_users)
+    recs=get_recs(book_recs, liked_books)
+    return recs
